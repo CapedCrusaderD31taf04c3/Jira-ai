@@ -1,4 +1,9 @@
 from pydantic import BaseModel
 
 class TicketModel(BaseModel):
-    info: dict
+    """
+    """
+    
+    issue: dict
+    user: dict
+    timestamp: int

@@ -8,10 +8,11 @@ class TicketView:
     """
     """
     @ticket_router.post("/ticket/")
-    async def get_ticket_info(ticket_info: TicketModel):
-        
+    async def get_ticket_info(ticket: TicketModel):
+        """
+        """
         return {
-                "message": "Success",
-                "status": 200,
-                "data": ticket_info.info
-            }
+            "message": "Success",
+            "status": 200,
+            "data": ticket
+        }
