@@ -16,7 +16,7 @@ comment_router = APIRouter()
 class CommentView:
     """
     """
-    @comment_router.get("/")
+    @comment_router.get("/comment/")
     async def home():
         """
         """
