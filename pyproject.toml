@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "jira-ai-assistant"
+version = "0.1.0"
+description = "Jira AI Assistant is a custom AI Assistant provided for Jira Cloud Software. This AI is a expert for custom and specific project, integrated with Jira Software for do some automation on ticket related tasks."
+authors = ["CapedCrusaderD31taf04c3 <shriharikoli25@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.110.0"
+uvicorn = "^0.28.0"
+python-dotenv = "^1.0.1"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
