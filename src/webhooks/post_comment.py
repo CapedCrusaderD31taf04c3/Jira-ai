@@ -1,9 +1,9 @@
-import requests
+
 import json
-from .custom_requests import APIRequest
+from .custom_webhooks import Webhook
 import os
 
-class PostCommentAPI(APIRequest):
+class PostCommentWBH(Webhook):
     """
     """
 
@@ -54,6 +54,3 @@ class PostCommentAPI(APIRequest):
             return response.text
         else:
             return response.text
-
-
-        return response.text

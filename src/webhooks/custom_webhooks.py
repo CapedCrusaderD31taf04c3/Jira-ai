@@ -1,6 +1,6 @@
 from requests import request
 
-class APIRequest:
+class Webhook:
     """
     """
 

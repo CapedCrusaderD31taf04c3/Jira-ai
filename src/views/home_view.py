@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from api_requests.post_comment import PostCommentAPI
+from webhooks.post_comment import PostCommentWBH
 
 home_router = APIRouter()
 
@@ -11,7 +11,7 @@ class HomeView:
         """
         """
 
-        result = PostCommentAPI().post_comment(
+        result = PostCommentWBH().post_comment(
             ticket_id="KAN-1",
             comment="This comment is made from API Request"
             )
