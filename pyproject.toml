@@ -13,6 +13,7 @@ uvicorn = "^0.28.0"
 python-dotenv = "^1.0.1"
 requests = "^2.31.0"
 openai = "^1.14.0"
+jira = "^3.6.0"
 
 
 [build-system]

@@ -8,8 +8,9 @@
 # ======================================
 
 import os
-
 from openai import OpenAI
+
+
 
 class JiraAI():
     """
@@ -28,7 +29,7 @@ class JiraAI():
       pass  
 
     @classmethod
-    def ask_openai(cls, question):
+    def ask_openai(cls, question, ticket_type="Story"):
         """
         """
         try:
