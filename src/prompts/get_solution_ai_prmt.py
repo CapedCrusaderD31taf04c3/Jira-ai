@@ -15,31 +15,7 @@
 # 
 # =========================================================================================
 
-from requests import request
+GET_SOLUTION_PROMPT = """
+Provide solution for given task
 
-class Webhook:
-    """
-    """
-
-    def get(self, url, headers, payload):
-        """
-        """
-        response = request(method="GET", url=url, headers=headers, data=payload)
-
-        return response
-    
-    def post(self, url, headers, payload):
-        """
-        """
-        response = request(method="POST", url=url, headers=headers, data=payload)
-
-        return response
-    
-    def put(self, url, headers, payload):
-        """
-        """
-        response = request(method="PUT", url=url, headers=headers, data=payload)
-
-        return response
-    
-    
+"""

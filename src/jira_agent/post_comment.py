@@ -15,31 +15,20 @@
 # 
 # =========================================================================================
 
-from requests import request
+from .jira_main import InitJira
 
-class Webhook:
+class PostComment:
     """
     """
+    def __init__(self) -> None:
+        self.jira = InitJira.get_jira_instance()
 
-    def get(self, url, headers, payload):
-        """
-        """
-        response = request(method="GET", url=url, headers=headers, data=payload)
+    def post_comment(self, ticket_id, comment):
+        response = self.jira.add_comment(
+            issue=ticket_id,
+            body=comment
+        )
 
-        return response
-    
-    def post(self, url, headers, payload):
-        """
-        """
-        response = request(method="POST", url=url, headers=headers, data=payload)
+        return response.__dict__
 
-        return response
-    
-    def put(self, url, headers, payload):
-        """
-        """
-        response = request(method="PUT", url=url, headers=headers, data=payload)
-
-        return response
-    
     

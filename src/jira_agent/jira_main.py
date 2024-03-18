@@ -15,31 +15,23 @@
 # 
 # =========================================================================================
 
-from requests import request
+from jira import JIRA
+import os
 
-class Webhook:
+class InitJira:
     """
     """
+    jira = JIRA(
+        os.getenv("JIRA_DOMAIN"),
+        basic_auth=(
+            os.getenv("JIRA_EMAIL"), 
+            os.getenv("JIRA_PAT_TOKEN")
+        )
+    )
 
-    def get(self, url, headers, payload):
+    @classmethod
+    def get_jira_instance(cls):
         """
         """
-        response = request(method="GET", url=url, headers=headers, data=payload)
 
-        return response
-    
-    def post(self, url, headers, payload):
-        """
-        """
-        response = request(method="POST", url=url, headers=headers, data=payload)
-
-        return response
-    
-    def put(self, url, headers, payload):
-        """
-        """
-        response = request(method="PUT", url=url, headers=headers, data=payload)
-
-        return response
-    
-    
+        return cls.jira
