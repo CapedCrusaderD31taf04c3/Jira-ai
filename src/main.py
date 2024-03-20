@@ -25,13 +25,23 @@ from views.comment_view import comment_router
 from views.ticket_view import ticket_router
 from views.home_view import home_router
 
+from logger.custom_logger import Logger
+
+
 class LoadEnvVars:
     """
     """
     @staticmethod
     def load_env_vars() -> None:
+        """
+        """
+
+        Logger.info(message="Loading Env Vars", stage="START")
+
         env_path = Path(__file__).parent.parent / ".env"
         load_dotenv(dotenv_path=env_path)
+
+        Logger.info(message="Loaded Env Vars", stage="End")
 
 
 class InitiateAIServer:
@@ -48,15 +58,23 @@ class InitiateAIServer:
             home_router, comment_router, ticket_router
         ]
 
+        Logger.info(message="Including URL Routers", stage="START")
+
         for router in routers:
             cls.app.include_router(router)
+        
+        Logger.info(message="Included URL Routers", stage="END")
             
     @classmethod
     def get_app(cls):
         """
         """
+        Logger.info(message="Server Configuring", stage="START")
+        
         # Adding all Routers
         cls.include_routers()
+        
+        Logger.info(message="Server Configured", stage="END")
 
         return cls.app
 
@@ -67,8 +85,10 @@ if __name__ == "__main__":
     
     import uvicorn
 
+    Logger.info(message="Initiating Env Var Loader", stage="START")
     LoadEnvVars.load_env_vars()
 
+    Logger.info(message="Initiating Server", stage="START")
     app = InitiateAIServer.get_app()
     
     uvicorn.run(app, host="0.0.0.0", port=8000)

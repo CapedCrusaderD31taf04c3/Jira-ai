@@ -18,6 +18,8 @@
 from fastapi import APIRouter, status
 from webhooks.post_comment import PostCommentWBH
 
+from logger.custom_logger import Logger
+
 comment_router = APIRouter()
 
 
@@ -25,7 +27,7 @@ class CommentView:
     """
     """
     @comment_router.get("/comment/")
-    async def home():
+    async def comment():
         """
         """
 
