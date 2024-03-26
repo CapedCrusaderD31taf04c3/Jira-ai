@@ -64,7 +64,6 @@ class TicketView:
                 Logger.info(message="AI Query Prepared", stage="END")
                 Logger.info(message="AI Query Prepared Successfully")
 
-
                 Logger.info(message="Asking AI", stage="START")
                 answer_text = JiraAI.ask_openai(question, ticket_type=ticket_type)
                 Logger.info(message="AI Replied", stage="END")
@@ -76,7 +75,7 @@ class TicketView:
                 Logger.info(message="Convered AI Response", stage="END")
                 Logger.info(message="AI Reply converted Successfully")
 
-                Logger.info(message=f"{len(answer)} Tickets willbe created")                
+                Logger.info(message=f"{len(answer)} Tickets will be created")                
 
                 Logger.info(message="Creating \"Story\" Type Tickets", stage="START")
                 result = CreateTicket().create_tickets(

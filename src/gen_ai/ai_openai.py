@@ -18,12 +18,13 @@
 import os
 from openai import OpenAI
 
+from logger.custom_logger import Logger
 
 
 class JiraAI():
     """
     """
-    client = OpenAI(api_key=os.getenv("OPEN_AI_TOKEN"))
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     model = "gpt-3.5-turbo-0125"
     response_format= { 
         "type": "json_object" 
@@ -52,4 +53,5 @@ class JiraAI():
             )
           return response.choices[0].message.content
         except Exception as e:
+           Logger.error(message=str(e))
            return str(e)

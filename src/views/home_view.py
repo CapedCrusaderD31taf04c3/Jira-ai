@@ -28,15 +28,15 @@ class HomeView:
         """
         """
 
-        result = PostCommentWBH().post_comment(
-            ticket_id="KAN-1",
-            comment="This comment is made from API Request"
-            )
+        # result = PostCommentWBH().post_comment(
+        #     ticket_id="KAN-1",
+        #     comment="This comment is made from API Request"
+        #     )
 
         return {
             "message": "Success",
             "status": 200,
             "data": {
-                "msg" : result
+                "msg" : ""
             }
         }
