@@ -55,7 +55,7 @@ class Logger:
         """
         """
 
-        cls.logger.error(message)
+        cls.logger.error(f"\033[31;40m{message}\033[0;0m")
 
     @classmethod
     def warning(cls, message):

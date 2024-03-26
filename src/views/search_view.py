@@ -15,28 +15,25 @@
 # 
 # =========================================================================================
 
-from fastapi import APIRouter, status
-from webhooks.post_comment import PostCommentWBH
+from fastapi import APIRouter
 
-home_router = APIRouter()
+search_router = APIRouter()
 
-class HomeView:
+class SearchView:
     """
     """
-    @home_router.get("/")
-    async def home():
+    @search_router.get("/search/{query}")
+    async def search(query: str | None = None):
         """
         """
-
-        # result = PostCommentWBH().post_comment(
-        #     ticket_id="KAN-1",
-        #     comment="This comment is made from API Request"
-        #     )
+        result = ""
+        if query:
+            result = query
 
         return {
             "message": "Success",
             "status": 200,
             "data": {
-                "msg" : ""
+                "msg" : result
             }
         }

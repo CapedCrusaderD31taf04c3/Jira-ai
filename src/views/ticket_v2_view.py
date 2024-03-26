@@ -15,12 +15,12 @@
 # 
 # =========================================================================================
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter
 from models.ticket_model import TicketModel
-from webhooks.post_comment import PostCommentWBH
 from jira_agent.post_comment import PostComment
 from jira_agent.create_ticket import CreateTicket
-from gen_ai.ai_openai import JiraAI
+from llama_idx.ai_llama import LlamaCompletionAI
+
 from prompts.get_solution_ai_prmt import GET_SOLUTION_PROMPT
 from prompts.create_stories_ai_prmt import CREATE_STORIES_FROM_EPIC_PROMPT
 
@@ -28,14 +28,14 @@ from logger.custom_logger import Logger
 
 import json
 
-ticket_router = APIRouter()
+ticket_router_v2 = APIRouter()
 
 
 class TicketView:
     """
     """
-    @ticket_router.post("/ticket/")
-    async def get_ticket_info(ticket: TicketModel):
+    @ticket_router_v2.post("/ticket/v2/")
+    async def prform_jira_operations(ticket: TicketModel):
         """
         """
         try: 
@@ -49,12 +49,6 @@ class TicketView:
             
             Logger.info(message="Retrieved Ticket Information", stage="END")
 
-            # Using WEBHOOK
-            # result = PostCommentWBH().post_comment(
-            #     ticket_id=ticket_key,
-            #     comment=answer
-            # )
-
             if ticket_type == "Epic":
 
                 Logger.info(message=f"Detected Ticket category : \"{ticket_type}\"")
@@ -65,13 +59,15 @@ class TicketView:
                 Logger.info(message="AI Query Prepared Successfully")
 
                 Logger.info(message="Asking AI", stage="START")
-                answer_text = JiraAI.ask_openai(question, ticket_type=ticket_type)
+                
+                answer_text = LlamaCompletionAI.ask_llama(question=question)
+                
                 Logger.info(message="AI Replied", stage="END")
                 Logger.info(message="AI Communicated Successfully")
 
 
                 Logger.info(message="Converting AI text Reponse", stage="START")
-                answer = json.loads(answer_text)
+                answer = json.loads(answer_text.response)
                 Logger.info(message="Convered AI Response", stage="END")
                 Logger.info(message="AI Reply converted Successfully")
 
@@ -94,14 +90,16 @@ class TicketView:
                 Logger.info(message="AI Query Prepared Successfully")
 
                 Logger.info(message="Asking AI", stage="START")
-                answer = JiraAI.ask_openai(question, ticket_type=ticket_type)
+                
+                answer = LlamaCompletionAI.ask_llama(question)
+                
                 Logger.info(message="AI Replied", stage="END")
                 Logger.info(message="AI Communicated Successfully")
 
                 Logger.info(message=f"Posting Comment to {ticket_key}", stage="START")
                 result = PostComment().post_comment(
                     ticket_id=ticket_key,
-                    comment=answer
+                    comment=answer.response
                 )
                 Logger.info(message=f"Comment Posted to {ticket_key}", stage="END")
                 Logger.info(message=f"Commented to Ticket Successfully")
@@ -122,3 +120,4 @@ class TicketView:
             }
 
         return response
+
