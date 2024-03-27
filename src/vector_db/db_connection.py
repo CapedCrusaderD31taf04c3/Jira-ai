@@ -14,3 +14,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # 
 # =========================================================================================
+
+import os
+
+import chromadb
+
+class ChromaVectorDB:
+    """
+    """
+    chroma_client = chromadb.PersistentClient(path=os.getenv("VECTOR_DB"))
+
+    try:
+        collection = chroma_client.get_collection(name="Jira_Tickets")
+    except:
+        collection = chroma_client.create_collection(name="Jira_Tickets")
+
+        
+    @classmethod
+    def create_collection(cls, collection_name):
+        """
+        """
+        collection = cls.chroma_client.create_collection(name="Jira_Tickets")

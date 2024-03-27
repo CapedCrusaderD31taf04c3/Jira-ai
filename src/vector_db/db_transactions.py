@@ -14,3 +14,36 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # 
 # =========================================================================================
+
+from .db_connection import ChromaVectorDB
+
+class VectorDBQueries:
+    """
+    """
+    @classmethod
+    def insert_query(cls, ids, documents):
+        """
+        """
+
+        ChromaVectorDB.collection.add(
+            ids=ids,
+            documents=documents
+        )
+
+        return "Created"
+
+    @classmethod
+    def search_query(
+            cls, query=None, where=None, where_document=None
+        ):
+        """
+        """
+
+        results = ChromaVectorDB.collection.query(
+            query_texts=query,
+            n_results=50,
+            where=where,
+            where_document=where_document
+        )
+
+        return results

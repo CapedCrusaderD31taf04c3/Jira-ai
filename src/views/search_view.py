@@ -16,19 +16,51 @@
 # =========================================================================================
 
 from fastapi import APIRouter
+from typing import Union
+from vector_db.db_transactions import VectorDBQueries
+from models.ticket_model import TicketModel
+
+import uuid
 
 search_router = APIRouter()
 
 class SearchView:
     """
     """
-    @search_router.get("/search/{query}")
-    async def search(query: str | None = None):
+    @search_router.get("/search/{search_str}")
+    async def search(search_str: Union[str, None] = None):
         """
         """
-        result = ""
-        if query:
-            result = query
+        
+        results = VectorDBQueries.search_query(
+            query=[search_str],
+            where=None,
+            where_document={
+                "$contains": search_str
+            }
+        )
+
+        return {
+            "message": "Success",
+            "status": 200,
+            "data": {
+                "msg" : results
+            }
+        }
+    
+
+class InsertTicketInDBView:
+    """
+    """
+    @search_router.post("/insert-ticket/")
+    async def insert_ticket(ticket: TicketModel):
+        """
+        """
+        
+        result = VectorDBQueries.insert_query(
+            ids=[str(uuid.uuid4())],
+            documents=[str(ticket)]
+        )
 
         return {
             "message": "Success",

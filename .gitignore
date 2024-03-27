@@ -163,5 +163,8 @@ cython_debug/
 #.idea/
 
 
-# Llama-index
+# Llama-index Embeddings
 .storage
+
+# Chroma DB Embeddings
+.chroma_db
