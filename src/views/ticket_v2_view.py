@@ -120,7 +120,7 @@ class TicketV2View:
         return response
     
 
-    @ticket_router_v2.post("/v2/ticket/bugfix/")
+    @ticket_router_v2.post("/v2/ticket/bug/")
     async def comment_on_bugfix_ticket_v2(ticket: TicketModel):
         """
         """
