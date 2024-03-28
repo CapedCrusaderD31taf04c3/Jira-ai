@@ -15,26 +15,21 @@
 # 
 # =========================================================================================
 
-from .jira_main import InitJira
 from logger.custom_logger import Logger
 
-class PostComment:
+class TicketInfoExtractor:
     """
     """
-    def __init__(self) -> None:
-        """
-        """
-        self.jira = InitJira.get_jira_instance()
 
-    def post_comment(self, ticket_id, comment):
+    def __init__(self, ticket):
         """
         """
-        Logger.info(message=f"Commenting On {ticket_id}", stage="START")
-        response = self.jira.add_comment(
-            issue=ticket_id,
-            body=comment
-        )
-        Logger.info(message=f"Commented to {ticket_id}", stage="END")
-        return response.__dict__
 
-    
+        Logger.info(message="Retrieving Ticket Information", stage="START")
+
+        self.ticket_key = ticket.issue.get("key", None)
+        self.ticket_summary = ticket.issue.get("fields", {}).get("summary", None)
+        self.ticket_desc = ticket.issue.get("fields", {}).get("description", None)
+        self.ticket_type = ticket.issue.get("fields", {}).get("issuetype", {}).get("namedValue", None)
+        
+        Logger.info(message="Retrieved Ticket Information", stage="END")

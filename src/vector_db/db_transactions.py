@@ -17,6 +17,8 @@
 
 from .db_connection import ChromaVectorDB
 
+from logger.custom_logger import Logger
+
 class VectorDBQueries:
     """
     """
@@ -38,12 +40,12 @@ class VectorDBQueries:
         ):
         """
         """
-
+        Logger.info(message="Searching In DB", stage="START")
         results = ChromaVectorDB.collection.query(
             query_texts=query,
             n_results=50,
             where=where,
             where_document=where_document
         )
-
+        Logger.info(message="Search Operation Completed", stage="END")
         return results

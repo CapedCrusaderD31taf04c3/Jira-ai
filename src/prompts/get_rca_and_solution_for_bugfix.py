@@ -15,26 +15,11 @@
 # 
 # =========================================================================================
 
-from .jira_main import InitJira
-from logger.custom_logger import Logger
-
-class PostComment:
+class GetRcaAndSolutionOpenAIPMT:
     """
     """
-    def __init__(self) -> None:
-        """
-        """
-        self.jira = InitJira.get_jira_instance()
 
-    def post_comment(self, ticket_id, comment):
-        """
-        """
-        Logger.info(message=f"Commenting On {ticket_id}", stage="START")
-        response = self.jira.add_comment(
-            issue=ticket_id,
-            body=comment
-        )
-        Logger.info(message=f"Commented to {ticket_id}", stage="END")
-        return response.__dict__
-
-    
+    GET_RCA_AND_SOLUTION_PROMPT = """
+    This Following error occurred because of problem in source code,
+    Provide Solution and Root Cause
+    """

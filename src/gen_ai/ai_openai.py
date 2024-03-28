@@ -42,6 +42,7 @@ class JiraAI():
         """
         """
         try:
+          Logger.info(message="Asking AI", stage="START")
           response = cls.client.chat.completions.create(
               model=cls.model,
               messages=[
@@ -51,6 +52,7 @@ class JiraAI():
                 }
               ]
             )
+          Logger.info(message="AI Replied", stage="END")
           return response.choices[0].message.content
         except Exception as e:
            Logger.error(message=str(e))

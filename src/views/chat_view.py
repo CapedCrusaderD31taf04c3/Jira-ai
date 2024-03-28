@@ -27,17 +27,13 @@ chat_router = APIRouter()
 class ChatV1View:
     """
     """
-    @chat_router.post("/chat/v1/")
+    @chat_router.post("/v1/chat/")
     async def chat_bot_v1(chat_model: ChatModel):
         """
         """
         
-        try:
-            Logger.info(message="Asking AI", stage="START")
-                
+        try:    
             answer_text = LlamaChatBotAI.ask_llama(question=chat_model.question)
-            
-            Logger.info(message="AI Replied", stage="END")
             Logger.info(message="AI Communicated Successfully")
 
             response =  {
@@ -61,17 +57,14 @@ class ChatV1View:
 class ChatV2View:
     """
     """
-    @chat_router.post("/chat/v2/")
+    @chat_router.post("/v2/chat/")
     async def chat_bot_v2(chat_model: ChatModel):
         """
         """
         
         try:
-            Logger.info(message="Asking AI", stage="START")
                 
             answer_text = LlamaCompletionAI.ask_llama(question=chat_model.question)
-            
-            Logger.info(message="AI Replied", stage="END")
             Logger.info(message="AI Communicated Successfully")
 
             response =  {
