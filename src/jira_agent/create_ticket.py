@@ -16,7 +16,10 @@
 # =========================================================================================
 
 from .jira_main import InitJira
+from logger.custom_logger import Logger
 import os
+import json
+
 
 class CreateTicket:
     """
@@ -24,39 +27,27 @@ class CreateTicket:
     def __init__(self) -> None:
         self.jira = InitJira.get_jira_instance()
 
-    def create_tickets(self, stories, parent_ticket_id = None):
+    def create_tickets(self, stories_text, parent_ticket_id = None):
         """
-        {
-            "fields": {
-                "project":
-                {
-                    "key": "KAN"
-                },
-                "parent":
-                {
-                    "key": "KAN-3"
-                },
-                "summary": "Child of KAN-3",
-                "description": "I am child of KAN-3",
-                "issuetype": {
-                    "name": "Story"
-                }
-            }
-        }
         """
-
+        
+        Logger.info(message="Creating \"Story\" Type Tickets", stage="START")     
+        stories = json.loads(stories_text)
+        Logger.info(message=f"{len(stories)} Tickets will be created")    
         field_list = self.get_field_list(
             stories=stories,
             parent_ticket_id=parent_ticket_id
         )
-
         result = self.jira.create_issues(field_list=field_list)
-
+        Logger.info(message="Created \"Story\" Type Tickets", stage="END")
+        Logger.info(message=f"{len(stories)} Tickets Created Successfully")
         return result
 
 
     def get_field_list(self, stories, parent_ticket_id = None):
-
+        """
+        """
+        
         project = {
             "key": os.getenv("JIRA_PROJECT_CODE")
         }

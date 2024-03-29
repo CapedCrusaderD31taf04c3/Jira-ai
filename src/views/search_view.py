@@ -20,6 +20,8 @@ from typing import Union
 from vector_db.db_transactions import VectorDBQueries
 from models.ticket_model import TicketModel
 
+from logger.custom_logger import Logger
+
 import uuid
 
 search_router = APIRouter()
@@ -31,22 +33,33 @@ class SearchView:
     async def search(search_str: Union[str, None] = None):
         """
         """
-        
-        results = VectorDBQueries.search_query(
-            query=[search_str],
-            where=None,
-            where_document={
-                "$contains": search_str
-            }
-        )
+        try: 
+            
+            results = VectorDBQueries.search_query(
+                query=[search_str],
+                where=None,
+                where_document={
+                    "$contains": search_str
+                }
+            )
 
-        return {
-            "message": "Success",
-            "status": 200,
-            "data": {
-                "msg" : results
+            return {
+                "message": "Success",
+                "status": 200,
+                "data": {
+                    "msg" : results
+                }
             }
-        }
+        
+        except Exception as e:  
+            Logger.error(str(e))
+            response = {
+                "message": "ERROR",
+                "status": 500,
+                "data": str(e)
+            }
+
+        return response
     
 
 class InsertTicketInDBView:
@@ -56,16 +69,26 @@ class InsertTicketInDBView:
     async def insert_ticket(ticket: TicketModel):
         """
         """
-        
-        result = VectorDBQueries.insert_query(
-            ids=[str(uuid.uuid4())],
-            documents=[str(ticket)]
-        )
+        try:
+            result = VectorDBQueries.insert_query(
+                ids=[str(uuid.uuid4())],
+                documents=[str(ticket)]
+            )
 
-        return {
-            "message": "Success",
-            "status": 200,
-            "data": {
-                "msg" : result
+            response =  {
+                "message": "Success",
+                "status": 200,
+                "data": {
+                    "msg" : result
+                }
             }
-        }
+
+        except Exception as e:  
+            Logger.error(str(e))
+            response = {
+                "message": "ERROR",
+                "status": 500,
+                "data": str(e)
+            }
+
+        return response

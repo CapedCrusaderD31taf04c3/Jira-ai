@@ -15,7 +15,11 @@
 # 
 # =========================================================================================
 
-GET_SOLUTION_PROMPT = """
-Provide solution for given task
+class GetSolutionOpenAIPMT:
+    """
+    """
 
-"""
+    GET_SOLUTION_PROMPT = """
+    Provide solution for given task
+
+    """

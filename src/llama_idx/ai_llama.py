@@ -23,7 +23,10 @@ from llama_index.core import (
 )
 
 from .chat_promt import CustomPrompt, PromptPassage
+from logger.custom_logger import Logger
+
 import os
+
 
 
 class DirLoader:
@@ -33,18 +36,21 @@ class DirLoader:
     
     doc_dir_path = os.getenv("PROJECT_DIR")
     PERSIST_DIR = os.getenv("STORE_INDEX_AT")
-
     if not os.path.exists(PERSIST_DIR):
         # load the documents and create the index
-        
+        Logger.info(message="Creating New Indexes...", stage="START")
         documents = SimpleDirectoryReader(input_dir=doc_dir_path, recursive=True).load_data()
         index = VectorStoreIndex.from_documents(documents)
         # store it for later
         index.storage_context.persist(persist_dir=PERSIST_DIR)
+        Logger.info(message="Created New Indexes...", stage="END")
+        
     else:
         # load the existing index
+        Logger.info(message="Loading old Indexes...", stage="START")
         storage_context = StorageContext.from_defaults(persist_dir=PERSIST_DIR)
         index = load_index_from_storage(storage_context)
+        Logger.info(message="Loaded Indexes...", stage="END")
 
 class LlamaCompletionAI:
     """
@@ -59,8 +65,9 @@ class LlamaCompletionAI:
     def ask_llama(cls, question):
         """
         """
-
+        Logger.info(message="Asking AI", stage="START")
         answer = cls.query_engine.query(question)
+        Logger.info(message="AI Replied", stage="END")
         return answer
 
 
@@ -78,6 +85,7 @@ class LlamaChatBotAI:
         """
         """
 
-        
+        Logger.info(message="Asking AI", stage="START")
         answer = cls.query_engine.query(question)
+        Logger.info(message="AI Replied", stage="END")
         return answer

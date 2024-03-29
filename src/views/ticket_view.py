@@ -21,90 +21,85 @@ from webhooks.post_comment import PostCommentWBH
 from jira_agent.post_comment import PostComment
 from jira_agent.create_ticket import CreateTicket
 from gen_ai.ai_openai import JiraAI
-from prompts.get_solution_ai_prmt import GET_SOLUTION_PROMPT
-from prompts.create_stories_ai_prmt import CREATE_STORIES_FROM_EPIC_PROMPT
-
+from prompts.get_solution_ai_prmt import GetSolutionOpenAIPMT
+from prompts.create_stories_ai_prmt import CreateStoriesOpenAIPMT
 from logger.custom_logger import Logger
-
-import json
+from helpers.ticket_info_extractor import TicketInfoExtractor
 
 ticket_router = APIRouter()
 
 
-class TicketView:
+class TicketV1View:
     """
     """
-    @ticket_router.post("/ticket/")
-    async def get_ticket_info(ticket: TicketModel):
+    @ticket_router.post("/v1/ticket/epic/")
+    async def create_stories_from_epic_v1(ticket: TicketModel):
         """
         """
         try: 
 
-            Logger.info(message="Retrieving Ticket Information", stage="START")
-
-            ticket_key = ticket.issue.get("key", None)
-            ticket_summary = ticket.issue.get("fields", {}).get("summary", None)
-            ticket_desc = ticket.issue.get("fields", {}).get("description", None)
-            ticket_type = ticket.issue.get("fields", {}).get("issuetype", {}).get("namedValue", None)
+            extract = TicketInfoExtractor(ticket)
+            Logger.info(message=f"Detected Ticket category : \"{extract.ticket_type}\"")
             
-            Logger.info(message="Retrieved Ticket Information", stage="END")
+            Logger.info(message="Preparing AI Query", stage="START")
+            question = (
+                f"{CreateStoriesOpenAIPMT.CREATE_STORIES_FROM_EPIC_PROMPT} "
+                f"{extract.ticket_summary} {extract.ticket_desc}"
+            )
+            Logger.info(message="AI Query Prepared", stage="END")
+            Logger.info(message="AI Query Prepared Successfully")
 
-            # Using WEBHOOK
-            # result = PostCommentWBH().post_comment(
-            #     ticket_id=ticket_key,
-            #     comment=answer
-            # )
+            answer_text = JiraAI.ask_openai(question, ticket_type=extract.ticket_type)
+            Logger.info(message="AI Communicated Successfully")
+     
+            result = CreateTicket().create_tickets(
+                stories=answer_text,
+                parent_ticket_id=extract.ticket_key
+            )
+            
+            Logger.info("Preparing Response", stage="START")
+            response =  {
+                "message": "Success",
+                "status": 200,
+                "data": str(result)
+            }
+            Logger.info("Response Prepared", stage="END")
+        except Exception as e:  
+            Logger.error(str(e))
+            response = {
+                "message": "ERROR",
+                "status": 500,
+                "data": str(e)
+            }
 
-            if ticket_type == "Epic":
-
-                Logger.info(message=f"Detected Ticket category : \"{ticket_type}\"")
-
-                Logger.info(message="Preparing AI Query", stage="START")
-                question = f"{CREATE_STORIES_FROM_EPIC_PROMPT} {ticket_summary}"
-                Logger.info(message="AI Query Prepared", stage="END")
-                Logger.info(message="AI Query Prepared Successfully")
-
-                Logger.info(message="Asking AI", stage="START")
-                answer_text = JiraAI.ask_openai(question, ticket_type=ticket_type)
-                Logger.info(message="AI Replied", stage="END")
-                Logger.info(message="AI Communicated Successfully")
+        return response
 
 
-                Logger.info(message="Converting AI text Reponse", stage="START")
-                answer = json.loads(answer_text)
-                Logger.info(message="Convered AI Response", stage="END")
-                Logger.info(message="AI Reply converted Successfully")
+    @ticket_router.post("/v1/ticket/story/")
+    async def comment_on_story_v1(ticket: TicketModel):
+        """
+        """
+        try: 
 
-                Logger.info(message=f"{len(answer)} Tickets will be created")                
+            extract = TicketInfoExtractor(ticket)
+            Logger.info(message=f"Detected Ticket category : \"{extract.ticket_type}\"")
+            
+            Logger.info(message="Preparing AI Query", stage="START")
+            question = (
+                f"{GetSolutionOpenAIPMT.GET_SOLUTION_PROMPT} "
+                f"{extract.ticket_summary} {extract.ticket_desc}"
+            )
+            Logger.info(message="AI Query Prepared", stage="END")
+            Logger.info(message="AI Query Prepared Successfully")
 
-                Logger.info(message="Creating \"Story\" Type Tickets", stage="START")
-                result = CreateTicket().create_tickets(
-                    stories=answer,
-                    parent_ticket_id=ticket_key
-                    )
-                Logger.info(message="Created \"Story\" Type Tickets", stage="END")
-                Logger.info(message=f"{len(answer)} Tickets Created Successfully")
-            else:
-
-                Logger.info(message=f"Detected Ticket category : \"{ticket_type}\"")
-
-                Logger.info(message="Preparing AI Query", stage="START")
-                question = f"{GET_SOLUTION_PROMPT} {ticket_desc}"
-                Logger.info(message="AI Query Prepared", stage="END")
-                Logger.info(message="AI Query Prepared Successfully")
-
-                Logger.info(message="Asking AI", stage="START")
-                answer = JiraAI.ask_openai(question, ticket_type=ticket_type)
-                Logger.info(message="AI Replied", stage="END")
-                Logger.info(message="AI Communicated Successfully")
-
-                Logger.info(message=f"Posting Comment to {ticket_key}", stage="START")
-                result = PostComment().post_comment(
-                    ticket_id=ticket_key,
-                    comment=answer
-                )
-                Logger.info(message=f"Comment Posted to {ticket_key}", stage="END")
-                Logger.info(message=f"Commented to Ticket Successfully")
+            answer = JiraAI.ask_openai(question, ticket_type=extract.ticket_type)
+            Logger.info(message="AI Communicated Successfully")
+            
+            result = PostComment().post_comment(
+                ticket_id=extract.ticket_key,
+                comment=answer
+            )
+            Logger.info(message=f"Commented to Ticket Successfully")
 
             Logger.info("Preparing Response", stage="START")
             response =  {
@@ -113,6 +108,7 @@ class TicketView:
                 "data": str(result)
             }
             Logger.info("Response Prepared", stage="END")
+
         except Exception as e:  
             Logger.error(str(e))
             response = {
