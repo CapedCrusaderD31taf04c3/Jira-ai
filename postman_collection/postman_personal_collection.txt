@@ -1,1 +1,1 @@
-https://api.postman.com/collections/14811275-88f88b17-7f36-41cc-b83b-b153edc082a5?access_key=KEY
+https://api.postman.com/collections/collection_id?access_key=KEY
