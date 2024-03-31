@@ -19,12 +19,15 @@ from fastapi import APIRouter
 from models.ticket_model import TicketModel
 from jira_agent.post_comment import PostComment
 from jira_agent.create_ticket import CreateTicket
+from jira_agent.update_ticket import UpdateTicket
 from llama_idx.ai_llama import LlamaCompletionAI
-from prompts.get_solution_ai_prmt import GetSolutionOpenAIPMT
+from prompts.get_solution_ai_prmt import SolutionPMT
 from prompts.create_stories_ai_prmt import CreateStoriesOpenAIPMT
-from prompts.get_rca_and_solution_for_bugfix import GetRcaAndSolutionOpenAIPMT
+from prompts.get_rca_and_solution_for_bugfix import RCAAndSolutionPMT
 from logger.custom_logger import Logger
 from helpers.ticket_info_extractor import TicketInfoExtractor
+
+import json
 
 ticket_router_v2 = APIRouter()
 
@@ -43,8 +46,8 @@ class TicketV2View:
             
             Logger.info(message="Preparing AI Query", stage="START")
             question = (
-                f"{CreateStoriesOpenAIPMT.CREATE_STORIES_FROM_EPIC_PROMPT} "
-                f"{extract.ticket_summary} {extract.ticket_desc}"
+                f"{CreateStoriesOpenAIPMT.PROMPT} "
+                f"{extract.ticket_summary}:{extract.ticket_desc}"
             )
             Logger.info(message="AI Query Prepared", stage="END")
             Logger.info(message="AI Query Prepared Successfully")
@@ -53,7 +56,7 @@ class TicketV2View:
             Logger.info(message="AI Communicated Successfully")
 
             result = CreateTicket().create_tickets(
-                stories=answer_text,
+                stories_text=answer_text.response,
                 parent_ticket_id=extract.ticket_key
             )
             
@@ -87,8 +90,8 @@ class TicketV2View:
             
             Logger.info(message="Preparing AI Query", stage="START")
             question = (
-                f"{GetSolutionOpenAIPMT.GET_SOLUTION_PROMPT} "
-                f"{extract.ticket_summary} {extract.ticket_desc}"
+                f"{SolutionPMT.PROMPT} "
+                f"{extract.ticket_summary}:{extract.ticket_desc}"
             )
             Logger.info(message="AI Query Prepared", stage="END")
             Logger.info(message="AI Query Prepared Successfully")
@@ -131,20 +134,28 @@ class TicketV2View:
             
             Logger.info(message="Preparing AI Query", stage="START")
             question = (
-                f"{GetRcaAndSolutionOpenAIPMT.GET_RCA_AND_SOLUTION_PROMPT} "
-                f"{extract.ticket_summary} {extract.ticket_desc}"
+                f"{RCAAndSolutionPMT.PROMPT} "
+                f"{extract.ticket_summary}:{extract.ticket_desc}"
             )
             Logger.info(message="AI Query Prepared", stage="END")
             Logger.info(message="AI Query Prepared Successfully")
 
-            answer = LlamaCompletionAI.ask_llama(question)
+            answer_text = LlamaCompletionAI.ask_llama(question)
+            answer = json.loads(answer_text.response)
             Logger.info(message="AI Communicated Successfully")
 
             result = PostComment().post_comment(
                 ticket_id=extract.ticket_key,
-                comment=answer.response
+                comment=answer["solution"]
             )
             Logger.info(message=f"Commented to Ticket Successfully")
+
+            if answer.get("root_cause", None):
+                UpdateTicket().update_rca(
+                    ticket_id=extract.ticket_key,
+                    rca=answer["root_cause"]
+                )
+                Logger.info(message=f"RCA Updated to Ticket Successfully")
 
             Logger.info("Preparing Response", stage="START")
             response =  {

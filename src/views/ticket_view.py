@@ -21,7 +21,7 @@ from webhooks.post_comment import PostCommentWBH
 from jira_agent.post_comment import PostComment
 from jira_agent.create_ticket import CreateTicket
 from gen_ai.ai_openai import JiraAI
-from prompts.get_solution_ai_prmt import GetSolutionOpenAIPMT
+from prompts.get_solution_ai_prmt import SolutionPMT
 from prompts.create_stories_ai_prmt import CreateStoriesOpenAIPMT
 from logger.custom_logger import Logger
 from helpers.ticket_info_extractor import TicketInfoExtractor
@@ -43,8 +43,8 @@ class TicketV1View:
             
             Logger.info(message="Preparing AI Query", stage="START")
             question = (
-                f"{CreateStoriesOpenAIPMT.CREATE_STORIES_FROM_EPIC_PROMPT} "
-                f"{extract.ticket_summary} {extract.ticket_desc}"
+                f"{CreateStoriesOpenAIPMT.PROMPT}"
+                f"{extract.ticket_summary}:{extract.ticket_desc}"
             )
             Logger.info(message="AI Query Prepared", stage="END")
             Logger.info(message="AI Query Prepared Successfully")
@@ -86,8 +86,8 @@ class TicketV1View:
             
             Logger.info(message="Preparing AI Query", stage="START")
             question = (
-                f"{GetSolutionOpenAIPMT.GET_SOLUTION_PROMPT} "
-                f"{extract.ticket_summary} {extract.ticket_desc}"
+                f"{SolutionPMT.PROMPT}"
+                f"{extract.ticket_summary}:{extract.ticket_desc}"
             )
             Logger.info(message="AI Query Prepared", stage="END")
             Logger.info(message="AI Query Prepared Successfully")

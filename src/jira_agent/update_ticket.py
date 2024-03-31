@@ -15,22 +15,27 @@
 # 
 # =========================================================================================
 
+from .jira_main import InitJira
+from logger.custom_logger import Logger
+import os
+import json
 
-class RCAAndSolutionPMT:
 
-    INPUT_PREPARATION = """Bug, Error or Exception is reported in the format title:description, summarize this,"""
-
-    WORK_INSTRUCTION = """This error occurred because of problem in source code,"""
-
-    OUTPUT_SPECIFICATION = """Provide Solution and Root Cause in below given format only, keep the key names and value data type same
-    {
-        "solution": "This is a solution",
-        "root_cause": "This is a root cause"
-    }
+class UpdateTicket:
     """
-
-    PROMPT = f"""
-    {INPUT_PREPARATION}
-    {WORK_INSTRUCTION}
-    {OUTPUT_SPECIFICATION}
     """
+    def __init__(self) -> None:
+        self.jira = InitJira.get_jira_instance()
+
+    def update_rca(self, ticket_id, rca):
+        """
+        """
+        Logger.info(message=f"Updating RCA on {ticket_id}", stage="START")
+        issue = self.jira.issue(ticket_id)
+        issue.update(
+            fields={
+                "customfield_10033": rca
+                }
+        )
+        Logger.info(message=f"Updated RCA in {ticket_id}", stage="END")
+        return True

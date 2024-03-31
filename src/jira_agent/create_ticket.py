@@ -60,11 +60,13 @@ class CreateTicket:
 
         for story in stories:
             ticket = {
-                "summary": story["title"],
-                "description": story["description"],
+                "summary": story["story_title"],
+                "description": story.get("description", ""),
                 "issuetype": {
                     "name": "Story"
-                }
+                },
+                "labels": story["labels"]
+                # "customfield_10001": story["team"]
             }
 
             ticket.update({"project": project})
