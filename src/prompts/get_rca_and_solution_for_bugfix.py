@@ -15,11 +15,22 @@
 # 
 # =========================================================================================
 
-class GetRcaAndSolutionOpenAIPMT:
-    """
+
+class RCAAndSolutionPMT:
+
+    INPUT_PREPARATION = """Bug, Error or Exception is reported in the format title:description, summarize this,"""
+
+    WORK_INSTRUCTION = """This error occurred because of problem in source code,"""
+
+    OUTPUT_SPECIFICATION = """Provide Solution and Root Cause in below given format only, keep the key names and value data type same
+    {
+        "solution": "This is a solution",
+        "root_cause": "This is a root cause"
+    }
     """
 
-    GET_RCA_AND_SOLUTION_PROMPT = """
-    This Following error occurred because of problem in source code,
-    Provide Solution and Root Cause
+    PROMPT = f"""
+    {INPUT_PREPARATION}
+    {WORK_INSTRUCTION}
+    {OUTPUT_SPECIFICATION}
     """

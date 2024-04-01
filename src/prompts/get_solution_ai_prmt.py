@@ -15,11 +15,10 @@
 # 
 # =========================================================================================
 
-class GetSolutionOpenAIPMT:
+class SolutionPMT:
     """
     """
 
-    GET_SOLUTION_PROMPT = """
-    Provide solution for given task
-
+    PROMPT = """
+    Provide solution for given task, task is provided in "title" and described in "description"
     """
