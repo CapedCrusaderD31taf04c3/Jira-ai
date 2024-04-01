@@ -20,6 +20,5 @@ class SolutionPMT:
     """
 
     PROMPT = """
-    Provide solution for given task, task is provided in title:description format 
-
+    Provide solution for given task, task is provided in "title" and described in "description"
     """

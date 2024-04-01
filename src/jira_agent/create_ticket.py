@@ -16,6 +16,7 @@
 # =========================================================================================
 
 from .jira_main import InitJira
+from .update_ticket import UpdateTicket
 from logger.custom_logger import Logger
 import os
 import json
@@ -38,10 +39,18 @@ class CreateTicket:
             stories=stories,
             parent_ticket_id=parent_ticket_id
         )
-        result = self.jira.create_issues(field_list=field_list)
+        results = self.jira.create_issues(field_list=field_list)
         Logger.info(message="Created \"Story\" Type Tickets", stage="END")
+        
+        # Updating Teams
+        for index, result in enumerate(results):
+            UpdateTicket().update_team(
+                ticket_id=result["issue"].key,
+                team=stories[index]["team"]
+            )
+
         Logger.info(message=f"{len(stories)} Tickets Created Successfully")
-        return result
+        return results
 
 
     def get_field_list(self, stories, parent_ticket_id = None):
@@ -60,13 +69,12 @@ class CreateTicket:
 
         for story in stories:
             ticket = {
-                "summary": story["story_title"],
+                "summary": story["title"],
                 "description": story.get("description", ""),
                 "issuetype": {
                     "name": "Story"
                 },
                 "labels": story["labels"]
-                # "customfield_10001": story["team"]
             }
 
             ticket.update({"project": project})

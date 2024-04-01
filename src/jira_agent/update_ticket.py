@@ -17,8 +17,6 @@
 
 from .jira_main import InitJira
 from logger.custom_logger import Logger
-import os
-import json
 
 
 class UpdateTicket:
@@ -38,4 +36,16 @@ class UpdateTicket:
                 }
         )
         Logger.info(message=f"Updated RCA in {ticket_id}", stage="END")
+        return True
+    
+    def update_team(self, ticket_id, team):
+        """
+        """
+        issue = self.jira.issue(ticket_id)
+        issue.update(
+            fields={
+                "customfield_10001": team
+                }
+        )
+        Logger.info(message=f"Updated Team in ticket: {ticket_id}")
         return True

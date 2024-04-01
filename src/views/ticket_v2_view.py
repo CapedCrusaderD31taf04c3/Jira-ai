@@ -20,7 +20,7 @@ from models.ticket_model import TicketModel
 from jira_agent.post_comment import PostComment
 from jira_agent.create_ticket import CreateTicket
 from jira_agent.update_ticket import UpdateTicket
-from llama_idx.ai_llama import LlamaCompletionAI
+from llama_idx.ai_llama import LlamaCompletionAI, LlamaCompletionAIV2
 from prompts.get_solution_ai_prmt import SolutionPMT
 from prompts.create_stories_ai_prmt import CreateStoriesOpenAIPMT
 from prompts.get_rca_and_solution_for_bugfix import RCAAndSolutionPMT
@@ -46,20 +46,24 @@ class TicketV2View:
             
             Logger.info(message="Preparing AI Query", stage="START")
             question = (
-                f"{CreateStoriesOpenAIPMT.PROMPT} "
-                f"{extract.ticket_summary}:{extract.ticket_desc}"
+                f"{CreateStoriesOpenAIPMT.PROMPT}"
+                "Q:{"
+                f""" "heading": "{extract.ticket_summary}" """
+                f""" "info" : "{extract.ticket_desc}" """
+                "}"
+                "A:"
             )
             Logger.info(message="AI Query Prepared", stage="END")
             Logger.info(message="AI Query Prepared Successfully")
 
-            answer_text = LlamaCompletionAI.ask_llama(question=question)
+            answer_text = LlamaCompletionAIV2.ask_llama(question=question)
             Logger.info(message="AI Communicated Successfully")
 
             result = CreateTicket().create_tickets(
                 stories_text=answer_text.response,
                 parent_ticket_id=extract.ticket_key
             )
-            
+
             Logger.info("Preparing Response", stage="START")
             response =  {
                 "message": "Success",
@@ -90,8 +94,9 @@ class TicketV2View:
             
             Logger.info(message="Preparing AI Query", stage="START")
             question = (
-                f"{SolutionPMT.PROMPT} "
-                f"{extract.ticket_summary}:{extract.ticket_desc}"
+                f"{SolutionPMT.PROMPT}\n"
+                f""" "title": "{extract.ticket_summary}" ,\n"""
+                f""" "description": "{extract.ticket_desc}" """
             )
             Logger.info(message="AI Query Prepared", stage="END")
             Logger.info(message="AI Query Prepared Successfully")

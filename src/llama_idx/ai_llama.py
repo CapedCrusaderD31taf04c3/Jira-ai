@@ -71,6 +71,22 @@ class LlamaCompletionAI:
         return answer
 
 
+class LlamaCompletionAIV2:
+    """
+    """
+
+    query_engine = DirLoader.index.as_query_engine()
+
+    @classmethod
+    def ask_llama(cls, question):
+        """
+        """
+        Logger.info(message="Asking AI", stage="START")
+        answer = cls.query_engine.query(question)
+        Logger.info(message="AI Replied", stage="END")
+        return answer
+
+
 class LlamaChatBotAI:
     """
     """

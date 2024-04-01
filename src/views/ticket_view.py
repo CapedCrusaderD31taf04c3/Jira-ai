@@ -53,7 +53,7 @@ class TicketV1View:
             Logger.info(message="AI Communicated Successfully")
      
             result = CreateTicket().create_tickets(
-                stories=answer_text,
+                stories_text=answer_text,
                 parent_ticket_id=extract.ticket_key
             )
             
