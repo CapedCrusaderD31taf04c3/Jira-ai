@@ -16,6 +16,7 @@
 # =========================================================================================
 
 from git_repository import Repository
+from .create_pr import PRCreator
 import re
 
 class GitActivity(Repository):
@@ -130,3 +131,11 @@ class Procedure(GitActivity):
         self.stage_changes().commit_changes(
             commit_message="This is a Commit Message"
         ).push_changes()
+
+        # Creating PR
+        
+        PRCreator(
+            title="TASK-123-Testing-Git-Integrator", 
+            body="PR Created for Github Integrator",
+            head_branch="TASK-123-We-are-Testing-Git-Intgrator"
+            )
