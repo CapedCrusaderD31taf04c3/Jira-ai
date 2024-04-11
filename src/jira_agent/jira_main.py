@@ -21,6 +21,7 @@ import os
 class InitJira:
     """
     """
+    JIRA.DEFAULT_OPTIONS["rest_api_version"] = "3"
     jira = JIRA(
         os.getenv("JIRA_DOMAIN"),
         basic_auth=(
