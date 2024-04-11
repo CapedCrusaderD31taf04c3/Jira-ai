@@ -38,13 +38,14 @@ class UpdateTicket:
         Logger.info(message=f"Updated RCA in {ticket_id}", stage="END")
         return True
     
-    def update_team(self, ticket_id, team):
+    def update_team(self, ticket_id, team, labels):
         """
         """
         issue = self.jira.issue(ticket_id)
         issue.update(
             fields={
-                "customfield_10001": team
+                "customfield_10001": team,
+                "customfield_10036": labels,
                 }
         )
         Logger.info(message=f"Updated Team in ticket: {ticket_id}")
