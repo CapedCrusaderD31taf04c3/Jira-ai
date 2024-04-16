@@ -17,7 +17,8 @@
 
 from jira_agent.ADF.adf_components import ADFComponents
 
-class IssueTemplate1:
+
+class IssueTemplateV1:
     """
     Simple Rich text template for issues of the following format:
 
@@ -44,7 +45,7 @@ class IssueTemplate1:
         return description_payload
 
 
-class IssueTemplate2:
+class IssueTemplateV2:
     """
     Rich text templates for issues of the following format:
 
@@ -105,14 +106,37 @@ class IssueTemplate2:
         return out_scope_panel
 
     @classmethod
-    def create_issue_description(cls,story_desc:str,in_scope:list,out_scope:list) -> dict:
+    def create_accpetance_criteria(cls,acceptance_list:list) -> dict:
+        desc_content = ADFComponents.get_paragraph_adf(user_text="")
+        desc_content["content"] = []
 
+        for acceptance_criteria in acceptance_list:
+            acceptance_criteria_block = ADFComponents.acceptance_criteria(acceptance_criteria)
+            desc_content["content"] += acceptance_criteria_block
+            
         description_payload = ADFComponents.get_main_doc_adf()
+        description_payload["content"] = [desc_content]
+        return description_payload
 
+
+    @classmethod
+    def create_issue_description(cls,story_desc:str,in_scope:list,out_scope:list) -> dict:
+        description_payload = ADFComponents.get_main_doc_adf()
+        payload = []
         user_story_panel = cls.create_user_story_panel(description=story_desc)
-        in_scope_panel = cls.create_in_scope_panel(in_scope_list=in_scope)
-        out_scope_panel = cls.create_out_scope_panel(out_scope_list=out_scope)
+        payload.append(user_story_panel)
 
-        description_payload["content"] = [user_story_panel,in_scope_panel,out_scope_panel]
+        if in_scope:
+            in_scope_panel = cls.create_in_scope_panel(in_scope_list=in_scope)
+            payload.append(in_scope_panel)
+
+        if out_scope:
+            out_scope_panel = cls.create_out_scope_panel(out_scope_list=out_scope)
+            payload.append(out_scope_panel)
+        else:
+            out_scope_panel = cls.create_out_scope_panel(out_scope_list=[" "])
+            payload.append(out_scope_panel)
+
+        description_payload["content"] = payload
 
         return description_payload

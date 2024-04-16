@@ -16,6 +16,7 @@
 # =========================================================================================
 
 from .jira_main import InitJira
+from jira_agent.ADF.issue_templates import IssueTemplate2
 from logger.custom_logger import Logger
 
 
@@ -38,14 +39,17 @@ class UpdateTicket:
         Logger.info(message=f"Updated RCA in {ticket_id}", stage="END")
         return True
     
-    def update_team(self, ticket_id, team, labels):
+    def update_team(self, ticket_id, team, labels, acceptance_criteria):
         """
         """
+        rich_text_acceptance_criteria = IssueTemplate2.create_accpetance_criteria(acceptance_criteria)
+
         issue = self.jira.issue(ticket_id)
         issue.update(
             fields={
                 "customfield_10001": team,
                 "customfield_10036": labels,
+                "customfield_10039": rich_text_acceptance_criteria
                 }
         )
         Logger.info(message=f"Updated Team in ticket: {ticket_id}")
