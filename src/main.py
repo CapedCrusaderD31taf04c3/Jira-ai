@@ -24,7 +24,8 @@ from views.ticket_view import ticket_router
 from views.home_view import home_router
 from views.chat_view import chat_router
 from views.ticket_v2_view import ticket_router_v2
-from views.search_view import search_router
+from views.milvus_search_view import milvus_search_router
+# from views.search_view import milvus
 from views.code_view import code_router
 
 from logger.custom_logger import Logger
@@ -59,7 +60,7 @@ class InitiateAIServer:
         routers = [
             home_router, comment_router, 
             ticket_router,ticket_router_v2, 
-            chat_router, search_router,
+            chat_router, milvus_search_router,
             code_router
         ]
 
