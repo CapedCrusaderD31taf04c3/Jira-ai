@@ -18,10 +18,10 @@
 
 from fastapi import APIRouter
 from models.ticket_model import TicketModel
-from llama_idx.ai_llama import LlamaCompletionAIV2
-from logger.custom_logger import Logger
 from helpers.ticket_info_extractor import TicketInfoExtractor
-
+from logger.custom_logger import Logger
+from coder.chat_langchain import ChatOpenAILangV1
+from coder.code_updater import CodeUpdater
 
 code_router = APIRouter()
 
@@ -29,25 +29,31 @@ class CodeView:
     """
     """
     @code_router.post("/code/")
-    async def write_code():
+    async def write_code(ticket: TicketModel):
         """
         """
-        question = """
-        You're tasked with reviewing and modifying the codebase located in the src folder. 
-        Begin by thoroughly understanding the code's structure, dependencies, and functionalities. 
-        Implement the modifications ensuring alignment with best practices and maintaining readability. 
-        For each file needing updates, provide the modifid only files by applying update in code text only,
-        Test the modified code thoroughly to ensure proper functionality, 
-        Upon completion, submit the updated codebase.
-        so task is,
-        suport new feature to add task category, input for the task will be name of the task category
-        """
-        answer_text = LlamaCompletionAIV2.ask_llama(question=question)
+        extract = TicketInfoExtractor(ticket)
+        Logger.info(message=f"Detected Ticket category : \"{extract.ticket_type}\"")
+        
+        Logger.info(message="Preparing AI Query", stage="START")
+        question = (
+            "Q:{"
+            f""" "heading": "{extract.ticket_summary}" """
+            f""" "info" : "{extract.ticket_desc}" """
+            "}"
+            "A:"
+        )
+
+        
+
+        answer = ChatOpenAILangV1.ask_lang_openai(question=question)  
+
+        CodeUpdater(answer).update()
 
         response =  {
                 "message": "Success",
                 "status": 200,
-                "data": answer_text
+                "data": answer
             }
         
         return response

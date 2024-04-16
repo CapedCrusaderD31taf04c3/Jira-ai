@@ -36,7 +36,7 @@ class GitActivity(Repository):
         """
 
         alphanumeric_string = re.sub(
-            r'[^a-zA-Z0-9\s]', 
+            r'[^a-zA-Z0-9\s\\-]', 
             '', 
             f"{ticket_id} {ticket_title}"
         )
@@ -134,8 +134,8 @@ class Procedure(GitActivity):
 
         # Creating PR
         
-        PRCreator(
-            title="TASK-123-Testing-Git-Integrator", 
-            body="PR Created for Github Integrator",
-            head_branch="TASK-123-We-are-Testing-Git-Intgrator"
-            )
+        # PRCreator(
+        #     title="TASK-123-Testing-Git-Integrator", 
+        #     body="PR Created for Github Integrator",
+        #     head_branch="TASK-123-We-are-Testing-Git-Intgrator"
+        #     )
