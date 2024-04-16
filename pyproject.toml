@@ -17,6 +17,8 @@ jira = "^3.6.0"
 llama-index = "^0.10.22"
 pypdf = "^4.1.0"
 langchain = "^0.1.13"
+pymilvus = 2.4.0
+llama-index-vector-stores-milvus = 0.1.9
 
 
 [build-system]
