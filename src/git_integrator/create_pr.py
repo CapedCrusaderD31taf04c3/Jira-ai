@@ -37,8 +37,8 @@ class PRCreator:
 
         url = (
             "https://api.github.com/"
-            f"repos/{os.getenv("REPO_OWNER")}/"
-            f"{os.getenv("REPO_NAME")}/pulls"
+            f"repos/{os.getenv('REPO_OWNER')}/"
+            f"{os.getenv('REPO_NAME')}/pulls"
         )
 
         return url

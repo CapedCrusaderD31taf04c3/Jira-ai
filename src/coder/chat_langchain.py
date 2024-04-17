@@ -59,13 +59,13 @@ class ChatOpenAILangV1:
 
     chain = prompt | llm
 
-    def ask_lang_openai(self, question):
+    def ask_lang_openai(self, question, docs):
         """
         """
 
         response = self.chain.invoke(
             {
-                "history": ChatHistory.create().messages,
+                "history": ChatHistory.create(docs=docs).messages,
                 "input": f"{question}",
             }
         )

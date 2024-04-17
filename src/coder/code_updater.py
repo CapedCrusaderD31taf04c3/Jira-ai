@@ -16,6 +16,7 @@
 # =========================================================================================
 
 import json
+from pathlib import Path
 
 class CodeUpdater:
     """
@@ -49,6 +50,11 @@ class CodeUpdater:
         if file_location.exists():
             # If the file exists, delete it
             file_location.unlink()
+        
+        are_files_exists = [item.is_file() for item in file_location.parent.iterdir()]
+
+        if not any(are_files_exists):
+            file_location.parent.rmdir()
 	
     def update(self):
         """
@@ -57,17 +63,17 @@ class CodeUpdater:
         for solution in self.solutions:
             if solution["to_update"]:
                 self.file_updater(
-                    file_location=solution["file_location"],
+                    file_location=Path(solution["file_location"]),
                     file_data=solution["source_code"]
                 )
 
             elif solution["to_create"]:
                 self.file_creater(
-                    file_location=solution["file_location"],
+                    file_location=Path(solution["file_location"]),
                     file_data=solution["source_code"]
                 )
 
             elif solution["to_delete"]:
                 self.file_deleter(
-                    file_location=solution["file_location"]
+                    file_location=Path(solution["file_location"])
                 )

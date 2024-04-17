@@ -15,7 +15,7 @@
 # 
 # =========================================================================================
 
-from git_repository import Repository
+from .git_repository import Repository
 from .create_pr import PRCreator
 import re
 
@@ -108,6 +108,15 @@ class GitActivity(Repository):
 
         return self
     
+    def create_pr(self, description=""):
+        """
+        """
+        PRCreator(
+            title=self.branch_name, 
+            body=description,
+            head_branch=self.branch_name
+        )
+
 
 class Procedure(GitActivity):
     """
