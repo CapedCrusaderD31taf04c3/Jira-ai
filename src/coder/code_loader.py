@@ -31,7 +31,7 @@ class SourceCodeLoader:
         """
 
         loader = DirectoryLoader(
-            "E:\\Dummy_Project\\todo_app\\src", 
+            "E:/Dummy_Project/todo_app/src", 
             glob="**/*.py",
             exclude=["*.pyc"],
             recursive=True,

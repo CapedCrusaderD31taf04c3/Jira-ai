@@ -28,7 +28,7 @@ class OpenAICoderPrompt:
     }
 	A: [
 		{
-		"file_location": "E:\\Dummy_Project\\todo_app\\src\\main.py",
+		"file_location": "E:/Dummy_Project/todo_app/src/main.py",
 		"source_code": "# Testing\nfrom Todo import TodoApp\n\ndef main() -> None:\n  app: TodoApp = TodoApp()\n    app.start()\n\nif __name__ == "__main__":\n		main()",
 		"to_update": true,
 		"to_create": false,
