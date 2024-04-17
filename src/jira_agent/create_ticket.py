@@ -17,7 +17,7 @@
 
 from .jira_main import InitJira
 from .update_ticket import UpdateTicket
-from jira_agent.ADF.issue_templates import IssueTemplate1
+from jira_agent.ADF.issue_templates import IssueTemplateV2
 from logger.custom_logger import Logger
 import os
 import json
@@ -48,7 +48,8 @@ class CreateTicket:
             UpdateTicket().update_team(
                 ticket_id=result["issue"].key,
                 team=stories[index]["team"],
-                labels=stories[index]["labels"]
+                labels=stories[index]["labels"],
+                acceptance_criteria=stories[index]["acceptance_criteria"]
             )
 
         Logger.info(message=f"{len(stories)} Tickets Created Successfully")
@@ -70,9 +71,11 @@ class CreateTicket:
         ticket_list = []
 
         for story in stories:
-
-            rich_text_desc = IssueTemplate1.create_issue_description(
-                story_desc=story.get("description", "")
+            
+            rich_text_desc = IssueTemplateV2.create_issue_description(
+                story_desc=story.get("description", ""),
+                in_scope=story.get("in_scope", []),
+                out_scope=story.get("out_scope",[])
             )
 
             ticket = {
@@ -80,7 +83,7 @@ class CreateTicket:
                 "description": rich_text_desc,
                 "issuetype": {
                     "name": "Story"
-                },
+                }
                 # "labels": story["labels"]
             }
 
@@ -93,4 +96,3 @@ class CreateTicket:
             )
 
         return ticket_list
-

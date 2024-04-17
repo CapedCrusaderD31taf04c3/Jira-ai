@@ -84,7 +84,7 @@ class ADFComponents:
         return success_panel_adf
 
     @classmethod
-    def get_bullet_list()->dict:
+    def get_bullet_list(cls)->dict:
 
         bullet_list_adf = {
             "type": "bulletList",
@@ -122,3 +122,32 @@ class ADFComponents:
         }
 
         return code_block_adf
+
+    @classmethod
+    def get_cross_emoji(cls):
+        cross_emoji = {
+          "type": "emoji",
+          "attrs": {
+            "shortName": ":cross_mark:",
+            "id": "atlassian-cross_mark",
+            "text": ":cross_mark:"
+          }
+        }
+
+        return cross_emoji
+    
+    @classmethod
+    def acceptance_criteria(cls,acceptance_criteria):
+        emoji_block = cls.get_cross_emoji()
+        acceptance_criteria_block = [
+            emoji_block,
+            {
+            "type": "text",
+            "text": f" {acceptance_criteria}"
+            },
+            {
+            "type": "hardBreak"
+            }
+        ]
+
+        return acceptance_criteria_block
