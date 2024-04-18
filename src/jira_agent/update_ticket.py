@@ -16,7 +16,7 @@
 # =========================================================================================
 
 from .jira_main import InitJira
-from jira_agent.ADF.issue_templates import IssueTemplate2
+from jira_agent.ADF.issue_templates import IssueTemplateV2
 from logger.custom_logger import Logger
 
 
@@ -42,7 +42,7 @@ class UpdateTicket:
     def update_team(self, ticket_id, team, labels, acceptance_criteria):
         """
         """
-        rich_text_acceptance_criteria = IssueTemplate2.create_accpetance_criteria(acceptance_criteria)
+        rich_text_acceptance_criteria = IssueTemplateV2.create_accpetance_criteria(acceptance_criteria)
 
         issue = self.jira.issue(ticket_id)
         issue.update(

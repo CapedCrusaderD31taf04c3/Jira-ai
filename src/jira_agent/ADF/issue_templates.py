@@ -140,3 +140,13 @@ class IssueTemplateV2:
         description_payload["content"] = payload
 
         return description_payload
+    
+    @classmethod
+    def create_comment(cls,comment):
+        """
+        """
+        description_payload = ADFComponents.get_main_doc_adf()
+        comment_block = ADFComponents.get_paragraph_adf(comment)
+        description_payload["content"] = comment_block
+
+        return description_payload

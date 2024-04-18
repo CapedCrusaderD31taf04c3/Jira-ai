@@ -15,30 +15,26 @@
 # 
 # =========================================================================================
 
-from .jira_main import InitJira
-from jira_agent.ADF.issue_templates import IssueTemplateV2
-from logger.custom_logger import Logger
 
-class PostComment:
+from pydantic import BaseModel
+from typing import List
+
+class GetRCAAndSolutionAIResponse(BaseModel):
     """
     """
-    def __init__(self) -> None:
-        """
-        """
-        self.jira = InitJira.get_jira_instance()
+    solution: str
+    root_cause: str
 
-    def post_comment(self, ticket_id, comment):
-        """
-        """
-        Logger.info(message=f"Commenting On {ticket_id}", stage="START")
 
-        rich_text_comment = IssueTemplateV2.create_comment(comment)
-
-        response = self.jira.add_comment(
-            issue=ticket_id,
-            body=rich_text_comment
-        )
-        Logger.info(message=f"Commented to {ticket_id}", stage="END")
-        return response.__dict__
-
+class CreateStoriesAIResponse(BaseModel):
+    """
+    """
     
+    title: str 
+    description : str
+    acceptance_criteria : List[str]
+    team : str
+    labels : List[str]
+    in_scope : List[str]
+    out_scope : List[str]
+

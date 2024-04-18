@@ -19,8 +19,10 @@ from .jira_main import InitJira
 from .update_ticket import UpdateTicket
 from jira_agent.ADF.issue_templates import IssueTemplateV2
 from logger.custom_logger import Logger
+from models.ai_responses import CreateStoriesAIResponse
 import os
 import json
+
 
 
 class CreateTicket:
@@ -35,6 +37,9 @@ class CreateTicket:
         
         Logger.info(message="Creating \"Story\" Type Tickets", stage="START")     
         stories = json.loads(stories_text)
+
+        CreateStoriesAIResponse(**stories)
+
         Logger.info(message=f"{len(stories)} Tickets will be created")    
         field_list = self.get_field_list(
             stories=stories,

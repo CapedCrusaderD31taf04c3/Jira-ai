@@ -17,6 +17,7 @@
 
 from fastapi import APIRouter
 from models.ticket_model import TicketModel
+from models.ai_responses import GetRCAAndSolutionAIResponse
 from jira_agent.post_comment import PostComment
 from jira_agent.create_ticket import CreateTicket
 from jira_agent.update_ticket import UpdateTicket
@@ -139,14 +140,21 @@ class TicketV2View:
             
             Logger.info(message="Preparing AI Query", stage="START")
             question = (
-                f"{RCAAndSolutionPMT.PROMPT} "
-                f"{extract.ticket_summary}:{extract.ticket_desc}"
+                f"{RCAAndSolutionPMT.PROMPT} \n"
+                "Q:{\n"
+                f""" "heading": "{extract.ticket_summary}", \n"""
+                f""" "info" : "{extract.ticket_desc}" \n"""
+                "}\n"
+z                "A:"
             )
             Logger.info(message="AI Query Prepared", stage="END")
             Logger.info(message="AI Query Prepared Successfully")
 
             answer_text = LlamaCompletionAI.ask_llama(question)
             answer = json.loads(answer_text.response)
+
+            GetRCAAndSolutionAIResponse(**answer)
+
             Logger.info(message="AI Communicated Successfully")
 
             result = PostComment().post_comment(
